@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Deployed from GitHub Actions</title>
+    <title>GitHub Actions S3 Deployment</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             text-align: center;
             margin-top: 50px;
         }
-        .badge {
-            background-color: #2c3e50;
+        
+        .box {
+            background: #2c3e50;
             color: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
             display: inline-block;
         }
     </style>
+
 </head>
+
 <body>
+
     <h1>🚀 Deployed from GitHub Actions!</h1>
-    <div class="badge">
-        <p>Last deployed: <span id="deploy-time"></span></p>
+
+    <div class="box">
+
+        <p>
+            This website was deployed automatically using CI/CD.
+        </p>
+
+        <p id="time"></p>
+
     </div>
-    <p>This website was automatically deployed using GitHub Actions CI/CD.</p>
-    
+
     <script>
-        document.getElementById('deploy-time').innerText = new Date().toLocaleString();
+        document.getElementById("time").innerHTML =
+            "Deployment time: " + new Date();
     </script>
+
 </body>
+
 </html>
