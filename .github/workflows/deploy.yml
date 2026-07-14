@@ -12,23 +12,35 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment: production  # Uncomment after creating environment in GitHub Settings
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
+    - name: Check AWS credentials
+      id: check-creds
+      run: |
+        if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+          echo "has_credentials=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_credentials=false" >> $GITHUB_OUTPUT
+          echo "::warning::AWS credentials not configured. Skipping deployment. Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to repository secrets."
+        fi
+
     - name: Configure AWS Credentials
+      if: steps.check-creds.outputs.has_credentials == 'true'
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
-    
+
     - name: Sync files to S3
+      if: steps.check-creds.outputs.has_credentials == 'true'
       run: |
         aws s3 sync . s3://aderajew-github-actions-site/ --exclude ".git/*" --exclude ".github/*"
-    
+
     - name: Print deployment info
+      if: steps.check-creds.outputs.has_credentials == 'true'
       run: |
         echo "Deployment completed!"
         echo "Website URL: http://aderajew-github-actions-site.s3-website-us-east-1.amazonaws.com"
